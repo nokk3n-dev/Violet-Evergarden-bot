@@ -5,8 +5,11 @@
 //To turn on, type "node index.js"
 
 const Discord = require("discord.js")
+require("dotenv").config()
 
-const TOKEN = "OTI4NzgwNDA2ODEwMTAzOTE5.YddwKA.bBH-Jhiu7HbEcUoi4QpJRgFTUCg"
+const generateImage = require("./generateImage")
+
+const TOKEN = "OTI4NzgwNDA2ODEwMTAzOTE5.YddwKA.PpGjNc5m3zLYz_AtGgbJ4epcb8E"
 
 const client = new Discord.Client({
     intents: [
@@ -39,4 +42,14 @@ client.on("messageCreate", (message) => {
     }
 })
 
-client.login(TOKEN)
+const welcomeChannelId = "928869657539141683"
+
+client.on("guildMemberAdd", async (member) => {
+    const img = await generateImage(member)
+    member.guild.channels.cache.get(welcomeChannelId).send({
+        content: `<@${member.id}> Welcome to the server! I am Violet Evergarden, I will fix all the tables that you flip over.`,
+        files: [img]
+    })
+})
+
+client.login(process.env.TOKEN)
